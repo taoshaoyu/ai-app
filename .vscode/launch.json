@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug p1",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "llamaindex/p1.py",
+
+      // "python": "/path/to/your/python_env/python", // Replace with the path to your Python executable
+      "jinja": true,
+      "justMyCode": false
+    },
+    {
+      "name": "Debug wf1",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "llamaindex/workflow/w1.py",
+
+      // "python": "/path/to/your/python_env/python", // Replace with the path to your Python executable
+      "jinja": true,
+      "justMyCode": false
+    },
+  ]
+}
