@@ -2,10 +2,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug p1",
+      "name": "Debug ollama-agent-1",
       "type": "debugpy",
       "request": "launch",
-      "program": "llamaindex/p1.py",
+      "program": "llamaindex/agent/ollama-agent-1.py",
 
       // "python": "/path/to/your/python_env/python", // Replace with the path to your Python executable
       "jinja": true,
