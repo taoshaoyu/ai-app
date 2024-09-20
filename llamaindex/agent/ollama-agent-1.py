@@ -3,6 +3,11 @@ load_dotenv()
 from llama_index.core.agent import ReActAgent
 from llama_index.llms.ollama import Ollama
 from llama_index.core.tools import FunctionTool
+import logging
+import sys
+
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+logging.getLogger().addHandler(logging.StreamHandler(stream=sys.stdout))
 
 def multiply(a: float, b: float) -> float:
     """Multiply two numbers and returns the product"""
