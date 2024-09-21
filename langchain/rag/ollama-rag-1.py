@@ -12,8 +12,43 @@ documents = loader.load()
 
 from langchain_chroma import Chroma
 from langchain_ollama import OllamaEmbeddings
+from langchain_openai import OpenAIEmbeddings
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.prompts import ChatPromptTemplate
 
-vectorstore = Chroma.from_documents(documents, embedding=OllamaEmbeddings(model="nomic-embed-text:latest"))
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+splits = text_splitter.split_documents(documents)
 
-result = vectorstore.similarity_search("What did the author do growing up?")
-print(result)
+vectorstore = Chroma.from_documents(documents=splits, embedding=OllamaEmbeddings(model="nomic-embed-text:latest"))
+retriever = vectorstore.as_retriever()
+
+system_prompt = (
+    "You are an assistant for question-answering tasks. "
+    "Use the following pieces of retrieved context to answer "
+    "the question. If you don't know the answer, say that you "
+    "don't know. Use three sentences maximum and keep the "
+    "answer concise."
+    "\n\n"
+    "{context}"
+)
+
+prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", system_prompt),
+        ("human", "{input}"),
+    ]
+)
+
+from langchain.chains import create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_openai import ChatOpenAI
+from langchain_community.chat_models import ChatOllama
+
+llm=ChatOllama(model="qwen2:7b")
+
+question_answer_chain = create_stuff_documents_chain(llm, prompt)
+rag_chain = create_retrieval_chain(retriever, question_answer_chain)
+
+results = rag_chain.invoke({"input": "What did the author do growing up?"})
+
+print(results)
